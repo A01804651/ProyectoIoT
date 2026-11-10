@@ -45,6 +45,25 @@ Las caídas usan QoS 1 para que el broker confirme que llegaron; perder una medi
 }
 ```
 
+## Variables del esquema
+
+| Campo | Mensaje | Unidad | Tipo | Rango normal |
+| --- | --- | --- | --- | --- |
+| mac_address | Medición y caída | — | texto (`XX:XX:XX:XX:XX:XX`) | — |
+| fecha_hora | Medición y caída | hora local de México | texto (`AAAA-MM-DDTHH:MM:SS`) | — |
+| frecuencia_cardiaca | Medición | lpm | decimal (1 decimal) o `null` | 60 – 100 |
+| spo2 | Medición | % | decimal (1 decimal) o `null` | 95 – 100 |
+| temperatura | Medición | °C | decimal (1 decimal) o `null` | 36.0 – 37.5 |
+| pico_g | Caída | g | decimal (2 decimales) | — (solo se envía si hay caída) |
+
+El rango normal es el de una persona sana en reposo. Las alertas usan umbrales más amplios (tabla al final) para no avisar por variaciones normales.
+
+## Código del payload
+
+El sketch [`firmware/kora_payload/kora_payload.ino`](../firmware/kora_payload/kora_payload.ino) arma los dos mensajes con ArduinoJson y los imprime por serial. Toma la hora por NTP y la MAC con `WiFi.macAddress()`. Por ahora usa valores de prueba: manda una medición cada 30 s, y en el monitor serial se puede escribir `c` para simular una caída o `n` para probar una medición con `null`.
+
+**Evidencia del monitor serial:** [pegar aquí la captura con mensajes de medición, caída y una medición con `null`]
+
 ## Correspondencia con la base de datos
 
 Los campos se llaman igual que las columnas, para que Node-RED los inserte directo.
